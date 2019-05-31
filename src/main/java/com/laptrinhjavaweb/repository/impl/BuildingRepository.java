@@ -5,11 +5,14 @@ import com.laptrinhjavaweb.repository.IBuildingRepository;
 
 public class BuildingRepository extends AbstractJDBC<BuildingEntity> implements IBuildingRepository {
 
-	@Override
-	public Long insert(BuildingEntity buildingEntity) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	
+
+//	@Override
+//	public Long insert(BuildingEntity buildingEntity) {
+//		// TODO Auto-generated method stub
+//		//no nhay vao day chu co nhay vao ham abstract dau anh.
+//		return null;
+//	}
 
 	/*
 	public Long insert(BuildingEntity entity) {

@@ -270,6 +270,7 @@ public class AbstractJDBC<T> implements GenericJDBC<T> {
 		// check parent class
 		Class<?> parentClass = zClass.getSuperclass();
 		while (parentClass != null) {
+			
 			for (Field field : parentClass.getDeclaredFields()) {
 				if (fields.length() > 1) {
 					fields.append(",");
@@ -284,9 +285,11 @@ public class AbstractJDBC<T> implements GenericJDBC<T> {
 				}
 
 			}
-			parentClass = parentClass.getClass();
+//			parentClass = parentClass.getClass();
+			parentClass = parentClass.getSuperclass();
 		}
-		String sql = "INSET INTO " + tableName + "(" + fields.toString() + ") VALUES(" + params.toString() + ")";
+		//insert
+		String sql = "INSERT INTO " + tableName + "(" + fields.toString() + ") VALUES(" + params.toString() + ")";
 		return sql;
 	}
 
