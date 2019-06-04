@@ -10,10 +10,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
+import java.util.Map;
 
 import com.laptrinhjavaweb.annotation.Column;
 import com.laptrinhjavaweb.annotation.Table;
 import com.laptrinhjavaweb.mapper.ResultSetMapper;
+import com.laptrinhjavaweb.paging.Pageble;
+import com.laptrinhjavaweb.paging.Sorter;
 import com.laptrinhjavaweb.repository.GenericJDBC;
 
 public class AbstractJDBC<T> implements GenericJDBC<T> {
@@ -41,7 +44,7 @@ public class AbstractJDBC<T> implements GenericJDBC<T> {
 		return null;
 	}
 
-	@Override
+	/*@Override
 	public List<T> query(String sql, Object... parameters) {
 		ResultSetMapper<T> resultSetMapper = new ResultSetMapper<>();
 
@@ -50,12 +53,6 @@ public class AbstractJDBC<T> implements GenericJDBC<T> {
 				ResultSet resultSet = statement.executeQuery()) {
 
 			if (conn != null) {
-				// set parameter to statement
-				for (int i = 0; i < parameters.length; i++) {
-
-					int index = i + 1;
-					statement.setObject(index, parameters[i]);
-				}
 				return resultSetMapper.mapRow(resultSet, this.zClass);
 			}
 		} catch (SQLException e) {
@@ -167,7 +164,7 @@ public class AbstractJDBC<T> implements GenericJDBC<T> {
 		}
 
 		return null;
-	}
+	}*/
 
 	@Override
 	public Long insert(Object object) {
@@ -420,9 +417,175 @@ public class AbstractJDBC<T> implements GenericJDBC<T> {
 		return sql;
 	}
 
+	
 	@Override
-	public void delete(Object object) {
+	public List<T> findAll(Map<String, Object> properties, Pageble pageble, Object...where) {
+		
+		Connection conn = null;
+		Statement statement = null;
+		ResultSet resultSet = null;
+		ResultSetMapper<T> resultSetMapper = new ResultSetMapper<>();
+		
+		StringBuilder sql = createSQLfindAll(properties);
+		if(where != null && where.length >0 ) {
+			sql.append(where[0]);
+		}
+		
+		if(pageble != null) {
+			if(pageble.getOffset() != null && pageble.getLimit() != null) {
+				sql.append(" LIMIT " +pageble.getOffset()+ ","+pageble.getLimit()+"");
+			}
+			if(pageble.getSorter() != null) {
+				Sorter sorter = pageble.getSorter();
+				sql.append(" ORDER BY " +sorter.getSortName()+ ""+sorter.getSortBy()+"");
+			}
+		}
+		
+		try{
+			conn = getConnection();
+			statement = conn.createStatement();
+			resultSet = statement.executeQuery(sql.toString());
+			if (conn != null) {
+			return resultSetMapper.mapRow(resultSet, this.zClass);
+			}
+		} catch (SQLException e) {
+			System.out.print(e.getMessage());
+		}finally {
+			try {
+				if (conn != null) {
+					conn.close();
+				}
+				if (statement != null) {
+					statement.close();
+				}
+				if(resultSet != null) {
+					resultSet.close();
+				}
+			} catch (SQLException e2) {
+				e2.printStackTrace();
+			}
+		}
+		return null;
+	}
 
+	private StringBuilder createSQLfindAll(Map<String, Object> properties) {
+		
+		String tableName = "";
+		if (zClass.isAnnotationPresent(Table.class)) {
+			Table table = zClass.getAnnotation(Table.class);
+			tableName = table.name();
+		}
+		
+		StringBuilder result = new StringBuilder("SELECT * FROM "+tableName+" WHERE 1=1 ");
+		if(properties !=null && properties.size() > 0) {
+			String[] params = new String[properties.size()];
+			Object[] values = new Object[properties.size()];
+			int i = 0;
+			for(Map.Entry<?,?> item: properties.entrySet()) {
+				
+				params[i] = (String) item.getKey();
+				values[i] = item.getValue();
+				i++;
+			}
+			for(int i1 = 0; i1 < params.length; i1++) {
+				if(values[i1] instanceof String) {
+					result.append(" and LOWER ("+params[i1]+") LIKE '%"+values[i1]+"%'");
+			}else if(values[i1] instanceof Integer) {
+				result.append(" and "+params[i1]+" = "+values[i1]+" ");
+			}
+			}
+		}
+		return result;
+	}
+
+	@Override
+	public void delete(long id) {
+		
+		Connection conn = null;
+		PreparedStatement statement = null;
+
+		try {
+			conn = getConnection();
+			conn.setAutoCommit(false);
+			
+			String tableName = "";
+			if (zClass.isAnnotationPresent(Table.class)) {
+				Table table = zClass.getAnnotation(Table.class);
+				tableName = table.name();
+			}
+			String sql = "DELETE FROM "+tableName+" WHERE id = ?";
+			statement = conn.prepareStatement(sql);
+
+			if (conn != null) {
+				statement.setObject(1, id);
+				statement.executeUpdate();
+				conn.commit();
+			}
+
+		} catch (SQLException e) {
+			if (conn != null) {
+				try {
+					conn.rollback();
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
+			}
+		} finally {
+			try {
+				if (conn != null) {
+					conn.close();
+				}
+				if (statement != null) {
+					statement.close();
+				}
+			} catch (SQLException e2) {
+				e2.printStackTrace();
+			}
+		}
+
+	}
+
+	@SuppressWarnings("hiding")
+	@Override
+	public <T> T findByID(long id) {
+		Connection conn = null;
+		PreparedStatement statement = null;
+		ResultSet resultSet = null;
+		ResultSetMapper<T> resultSetMapper = new ResultSetMapper<>();
+		
+		String tableName = "";
+		if (zClass.isAnnotationPresent(Table.class)) {
+			Table table = zClass.getAnnotation(Table.class);
+			tableName = table.name();
+		}
+		String sql = "SELECT * FROM " +tableName+ "WHERE id = ?";
+		try{
+			conn = getConnection();
+			statement = conn.prepareStatement(sql);
+			statement.setObject(1, id);
+			resultSet = statement.executeQuery();
+			if (conn != null) {
+			return resultSetMapper.mapRow(resultSet, this.zClass).get(0);
+			}
+		} catch (SQLException e) {
+			System.out.print(e.getMessage());
+		}finally {
+			try {
+				if (conn != null) {
+					conn.close();
+				}
+				if (statement != null) {
+					statement.close();
+				}
+				if(resultSet != null) {
+					resultSet.close();
+				}
+			} catch (SQLException e2) {
+				e2.printStackTrace();
+			}
+		}
+		return null;
+		
 	}
 
 }
