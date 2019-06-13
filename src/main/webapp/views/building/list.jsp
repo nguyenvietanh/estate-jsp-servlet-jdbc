@@ -39,7 +39,7 @@
 
 								<div class="form-group">
 									<div class="col-sm-6">
-										<label>Tên san pham</label>
+										<label>Ten san pham</label>
 										<div class="fg-line">
 											<input type="text" class="form-control input-sm" />
 										</div>
@@ -52,7 +52,45 @@
 									</div>
 								</div>
 
+								<div class="form-group">
+									<div class="col-sm-4">
+										<label>Ten quan ly</label>
+										<div class="fg-line">
+											<input type="text" class="form-control input-sm" />
+										</div>
+									</div>
+									<div class="col-sm-4">
+										<label>Dien thoai quan ly</label>
+										<div class="fg-line">
+											<input type="text" class="form-control input-sm" />
+										</div>
+									</div>
 
+									<div class="col-sm-4">
+										<label>Nhan vien phu trach</label>
+										<div class="fg-line">
+											<select class="form-control" id="sel1">
+												<option>1</option>
+
+											</select>
+										</div>
+									</div>
+								</div>
+
+								<div class="form-group">
+									<div class="col-sm-6">
+										<label>Loai toa nha</label>
+										<div class="fg-line">
+											<input type="text" class="form-control input-sm" /> <label
+												class="checkbox-inline"><input type="checkbox"
+												value="">Option 1</label> <label class="checkbox-inline"><input
+												type="checkbox" value="">Option 2</label> <label
+												class="checkbox-inline"><input type="checkbox"
+												value="">Option 3</label>
+										</div>
+
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>
