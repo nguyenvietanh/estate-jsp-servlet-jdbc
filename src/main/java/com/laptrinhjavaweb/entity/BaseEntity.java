@@ -10,15 +10,19 @@ public class BaseEntity {
 	private Long id;
 	
 	@Column(name = "createdby")
+	//@CreatedBy
 	private String  createdBy;
 	
 	@Column(name = "modifiedby")
+	//@ModifiedBy
 	private String modifiedBy;
 	
 	@Column(name = "createddate")
+	//@CreatedDate
 	private Timestamp createdDate;
 	
 	@Column(name = "modifieddate")
+	//@ModifiedDate
 	private Timestamp modifiedDate;
 	
 	
