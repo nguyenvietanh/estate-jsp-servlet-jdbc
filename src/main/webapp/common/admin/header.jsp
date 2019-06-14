@@ -25,7 +25,7 @@
             <a href="#" class="navbar-brand">
                 <small>
                     <i class="fa fa-leaf"></i>
-                    Trang chủ
+                    Trang chu
                 </small>
             </a>
         </div>
@@ -34,12 +34,12 @@
             <ul class="nav ace-nav">
                 <li class="light-blue dropdown-modal">
                     <a href="#" class="dropdown-toggle">
-                        Xin chào, [tên đăng nhập]
+                        Xin chao, [ten dang nhap]
                     </a>
 	                <li class="light-blue dropdown-modal">
 	                    <a href="<c:url value='/logout'/>">
 	                        <i class="ace-icon fa fa-power-off"></i>
-	                        Thoát
+	                        Thoat
 	                    </a>
 	                </li>
                 </li>
