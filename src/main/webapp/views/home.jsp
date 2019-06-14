@@ -6,7 +6,7 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>Trang chủ</title>
+    <title>Trang chu</title>
 </head>
 <body>
 <div class="main-content">
@@ -15,7 +15,7 @@
             <ul class="breadcrumb">
                 <li>
                     <i class="ace-icon fa fa-home home-icon"></i>
-                    <a href="#">Trang chủ</a>
+                    <a href="#">Trang chu</a>
                 </li>
             </ul><!-- /.breadcrumb -->
         </div>
